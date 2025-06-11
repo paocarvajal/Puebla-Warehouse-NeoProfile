@@ -1,895 +1,382 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Puebla Warehouses - NeoProfile</title>
+    <title>Puebla Industrial Warehouse Search</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: #f8fafc;
-            color: #333;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Light gray background */
         }
-        .text-brand-primary { color: #4A6D6A; }
-        .bg-brand-primary { background-color: #4A6D6A; }
-        .border-brand-primary { border-color: #4A6D6A; }
-        .text-brand-accent { color: #333333; }
-        .bg-brand-accent { background-color: #333333; }
-        .section-heading {
-            font-weight: 700;
-            font-size: 2.5rem;
-            line-height: 1.2;
-            margin-bottom: 1rem;
+       .section-header {
+            border-bottom: 2px solid #4A6D6A;
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
         }
-        .section-subheading {
-            font-weight: 400;
-            font-size: 1.125rem;
-            color: #6b7280;
-        }
-        .card {
-            background-color: #FFFFFF;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            padding: 2rem;
-        }
-        .table-responsive {
+       .table-container {
             overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
-        .data-table th, .data-table td {
+        table {
+            min-width: 1200px; /* Ensure tables don't get too narrow on smaller screens */
+            border-collapse: collapse;
+        }
+        th, td {
             padding: 0.75rem 1rem;
-            border-bottom: 1px solid #e5e7eb;
             text-align: left;
-            white-space: nowrap;
+            border-bottom: 1px solid #e2e8f0; /* Light border for rows */
         }
-        .data-table th {
-            background-color: #f3f4f6;
+        th {
+            background-color: #4A6D6A;
+            color: white;
             font-weight: 600;
-            color: #4A6D6A;
-            cursor: pointer; /* Indicate sortable */
+            cursor: pointer; /* Indicate sortable header */
             position: relative;
+            user-select: none;
         }
-        .data-table th .sort-icon {
-            margin-left: 0.5rem;
-            display: inline-block;
-            width: 0;
-            height: 0;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            vertical-align: middle;
+        th:hover {
+            background-color: #333333; /* Darker hover for sortable headers */
         }
-        .data-table th.asc .sort-icon {
-            border-bottom: 5px solid #4A6D6A;
+        th.sorted-asc::after {
+            content: ' ▲';
+            font-size: 0.8em;
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
         }
-        .data-table th.desc .sort-icon {
-            border-top: 5px solid #4A6D6A;
+        th.sorted-desc::after {
+            content: ' ▼';
+            font-size: 0.8em;
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
         }
-        .data-table tbody tr:hover {
-            background-color: #f9fafb;
+        tr:nth-child(even) {
+            background-color: #f3f4f6; /* Subtle alternating row color */
         }
-        .filter-input {
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            margin-bottom: 1rem;
-            font-size: 0.875rem;
-            line-height: 1.25rem;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);
+       .table-link {
+            color: #4A6D6A;
+            text-decoration: underline;
+        }
+       .table-link:hover {
+            color: #333333;
         }
     </style>
 </head>
-<body class="leading-relaxed">
+<body class="text-gray-800">
 
-    <!-- Header -->
-    <header class="bg-brand-primary text-white p-6 shadow-md text-center">
-        <h1 class="text-4xl md:text-5xl font-extrabold uppercase tracking-wide">Puebla Warehouses</h1>
-        <p class="text-xl md:text-2xl mt-2 font-light">Opciones de Almacenes Industriales en la Región de Puebla</p>
-    </header>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
-    <main class="container mx-auto px-4 py-8 md:py-12">
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-[#4A6D6A] mb-4">Industrial Warehouse Market Analysis: Puebla, Mexico</h1>
+            <p class="max-w-4xl mx-auto text-lg text-gray-600">
+                This report provides a comprehensive analysis of industrial warehouse availability for rent and sale within the key industrial zones of Cuautlancingo, Sanctorum, Ocotlán, and San Lorenzo Almecatla in Puebla, Mexico. Our objective is to identify properties that meet specific operational requirements for NeoProfile, balancing features with cost-effectiveness.
+            </p>
+        </header>
 
-        <!-- Intro Section -->
-        <section class="mb-16">
-            <div class="max-w-4xl mx-auto text-center mb-12">
-                <h2 class="section-heading text-brand-primary mb-4">Encuentra Tu Espacio Ideal en Puebla</h2>
-                <p class="section-subheading">Explora las opciones de almacenes industriales en renta y venta en ubicaciones estratégicas de Cuautlancingo, Sanctorum y municipios cercanos.</p>
-            </div>
-            <div class="card mb-8">
-                <h3 class="text-2xl font-bold text-brand-primary mb-4">Puebla: Un Hub Logístico Estratégico</h3>
-                <p class="text-gray-700 mb-4">El estado de Puebla se ha consolidado como un punto clave para la logística y la industria en el centro de México. Su ubicación privilegiada, con acceso a importantes corredores carreteros (como el México-Puebla y el Periférico Ecológico), lo conecta eficientemente con la Ciudad de México, el puerto de Veracruz y el sureste del país. Esto lo convierte en un lugar ideal para empresas que buscan optimizar sus cadenas de suministro y alcanzar mercados clave.</p>
-                <p class="text-gray-700">La creciente infraestructura industrial, la disponibilidad de mano de obra y los incentivos locales hacen de Puebla una opción atractiva para la expansión o el establecimiento de operaciones de almacenamiento y distribución.</p>
-            </div>
-            <div class="card">
-                <h3 class="text-2xl font-bold text-brand-primary mb-4">Ubicaciones Clave para tu Negocio</h3>
-                <p class="text-gray-700 mb-4">Dentro de la Zona Metropolitana de Puebla, municipios como Cuautlancingo, Sanctorum, Santa María Coronango, San Francisco Ocotlán, Ignacio Romero Vargas, San Lorenzo Almecatla y San Miguel Xoxtla destacan por su alta concentración de parques y naves industriales. Estas áreas son particularmente atractivas por:</p>
-                <ul class="list-disc list-inside text-gray-700 space-y-2 mb-4">
-                    <li>Conectividad: Proximidad a las principales autopistas y a la planta de Volkswagen de México, lo que facilita el transporte de mercancías.</li>
-                    <li>Infraestructura: Ofrecen una infraestructura moderna, con servicios completos (agua, luz, drenaje, telecomunicaciones) diseñados para el uso industrial.</li>
-                    <li>Disponibilidad: Amplia oferta de almacenes de diferentes tamaños y configuraciones, adaptándose a diversas necesidades operativas.</li>
-                    <li>Seguridad: Muchos parques industriales cuentan con seguridad privada y control de acceso 24/7.</li>
-                </ul>
-                <p class="text-gray-700">Ya sea que busques arrendar un espacio para tus operaciones de distribución o invertir en la compra de una propiedad industrial, estas ubicaciones te ofrecen la flexibilidad y las ventajas competitivas que tu empresa necesita.</p>
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-[#4A6D6A] section-header">Puebla Industrial Real Estate Market Overview</h2>
+            <div class="bg-white p-8 rounded-lg shadow-lg mb-8">
+                <p class="text-lg mb-4">
+                    Puebla, particularly the areas of Cuautlancingo, Sanctorum, and San Lorenzo Almecatla, holds significant strategic importance within Mexico's industrial landscape. These regions are characterized by their direct proximity to major industrial anchors such as the <span class="font-bold">Volkswagen (VW) assembly plant</span> and established industrial parks like <span class="font-bold">Finsa</span>. This geographical advantage inherently translates into substantial logistical benefits, access to well-developed infrastructure, and a concentration of businesses forming a robust supply chain ecosystem.
+                </p>
+                <p class="text-lg mb-4">
+                    The broader Mexican construction materials market is currently experiencing expansion. While the overall construction sector in Mexico is projected to face a period of stagnation in 2025, primarily due to a sharp decline in civil works, the <span class="font-bold">industrial segment remains resilient</span>. This is largely due to factors like <span class="font-bold">nearshoring trends</span> and sustained private investment, ensuring a steady supply of modern facilities.
+                </p>
+                <p class="text-lg">
+                    Key trends in construction include an increasing adoption of prefabricated and modular construction techniques, greater integration of digital technologies (e.g., Building Information Modeling - BIM, 3D printing), and a growing embrace of circular economy practices. Newer warehouses are likely to incorporate these advanced features, which, while potentially higher in initial investment, promise <span class="font-bold">reduced long-term operational costs</span> due to enhanced efficiency and durability.
+                </p>
             </div>
         </section>
 
-        <!-- Industrial Warehouses for Rent in Cuautlancingo -->
-        <section id="rent-cuautlancingo" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Renta - Cuautlancingo</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterRentCuautlancingoLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentCuautlancingoMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterRentCuautlancingoMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentCuautlancingoMinPrice" placeholder="Precio Mínimo (USD/mes)" class="filter-input">
-                        <input type="number" id="filterRentCuautlancingoMaxPrice" placeholder="Precio Máximo (USD/mes)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableRentCuautlancingo" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD/mes) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_rent_00" target="_blank" class="text-blue-600 hover:underline">Zona Norte</a></td><td>Cuautlancingo</td><td>72700</td><td>550</td><td>2,800</td><td>Oficinas 50m², 2 andenes, patio de 200m²</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_rent_07" target="_blank" class="text-blue-600 hover:underline">Fracc. Industrial B</a></td><td>Cuautlancingo</td><td>72700</td><td>650</td><td>3,200</td><td>Seguridad 24/7, acceso controlado</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_rent_01" target="_blank" class="text-blue-600 hover:underline">Centro</a></td><td>Cuautlancingo</td><td>72700</td><td>1,200</td><td>5,500</td><td>Andenes de carga, seguridad 24/7</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_rent_02" target="_blank" class="text-blue-600 hover:underline">Parque Industrial FINSA</a></td><td>Cuautlancingo</td><td>72700</td><td>1,500</td><td>7,000</td><td>Altura libre 9m, amplio patio de maniobras</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_rent_03" target="_blank" class="text-blue-600 hover:underline">Zona Industrial</a></td><td>Cuautlancingo</td><td>72700</td><td>1,000</td><td>4,800</td><td>Oficinas incluidas, acceso para trailers</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_rent_04" target="_blank" class="text-blue-600 hover:underline">Fraccionamiento Industrial</a></td><td>Cuautlancingo</td><td>72700</td><td>2,000</td><td>9,500</td><td>Sistema contra incendios, estacionamiento privado</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_rent_05" target="_blank" class="text-blue-600 hover:underline">Noroeste</a></td><td>Cuautlancingo</td><td>72700</td><td>800</td><td>4,000</td><td>Bodega pequeña, ideal para distribución local</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_rent_06" target="_blank" class="text-blue-600 hover:underline">Camino a Sanctorum</a></td><td>Cuautlancingo</td><td>72700</td><td>2,500</td><td>11,000</td><td>Naves nuevas, excelente iluminación natural</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-[#4A6D6A] section-header">Detailed Property Analysis: Cuautlancingo</h2>
+            <p class="text-gray-700 mb-6">Cuautlancingo stands as a pivotal industrial municipality in Puebla, primarily due to its strategic proximity to the Volkswagen plant and various industrial parks. This positioning makes it an ideal location for logistics and manufacturing operations.</p>
+
+            <h3 class="text-2xl font-bold text-[#333333] mb-4">Industrial Warehouses for Rent in Cuautlancingo</h3>
+            <div class="table-container bg-white rounded-lg shadow-lg mb-8">
+                <table id="cuautlancingoRentTable" class="w-full text-sm">
+                    <thead>
+                        <tr class="rounded-t-lg overflow-hidden">
+                            <th data-sortable="true" data-column-type="string">Location (Specific Area)</th>
+                            <th data-sortable="true" data-column-type="number">Square Meters (approx.)</th>
+                            <th data-sortable="true" data-column-type="string">Real Estate Handler (Platform)</th>
+                            <th data-sortable="true" data-column-type="string">Key Features & Dock Suitability</th>
+                            <th data-sortable="true" data-column-type="price">Price (MXN/Month)</th>
+                            <th>Source URL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>San Juan Cuautlancingo Centro</td><td>2000</td><td>Lamudi</td><td>Large maneuvering yard (500 m²), loading dock (andén) and floor-level ramp, 100 m² offices, three-phase electricity, 10m clear height. Suitable for DHC containers.</td><td>160000</td><td><a href="https://www.lamudi.com.mx/search-result/bodegas-en-renta-de-500-metros/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Juan Cuautlancingo Centro</td><td>1000</td><td>Lamudi</td><td>Privileged location, 24/7 security, ramp for access, loading dock with hydraulic ramp, offices in both units, three-phase energy. Hydraulic ramp is ideal for DHC containers.</td><td>50000</td><td><a href="https://www.lamudi.com.mx/search-result/bodegas-en-renta-de-500-metros/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>2375</td><td>Lamudi</td><td>New construction (90% complete), turnkey project, 500m from Mexico-Puebla Highway, opposite VW plant. Implies industrial suitability for DHC containers.</td><td>Not specified, inquire</td><td><a href="https://www.lamudi.com.mx/search-result/bodegas-en-renta-de-500-metros/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>863.05</td><td>Lamudi</td><td>New construction (90% complete), turnkey project, 500m from Mexico-Puebla Highway, opposite VW plant. Implies industrial suitability for DHC containers.</td><td>Not specified, inquire</td><td><a href="https://www.lamudi.com.mx/search-result/bodegas-en-renta-de-500-metros/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>619.62</td><td>Lamudi</td><td>New construction (90% complete), turnkey project, 500m from Mexico-Puebla Highway, opposite VW plant. Implies industrial suitability for DHC containers.</td><td>Not specified, inquire</td><td><a href="https://www.lamudi.com.mx/search-result/bodegas-en-renta-de-500-metros/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>Finsa, Cuautlancingo</td><td>8200</td><td>Lamudi</td><td>New nave, loading docks, heights of approx. 11m and 16m. Can be subdivided. Explicitly suitable for DHC containers.</td><td>Not specified, inquire</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-rent/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>1140</td><td>Lamudi</td><td>Floor capacity 250 kg/cm², 8m height, translucent sheets, available docks, patio, 10 parking spaces. Explicitly suitable for DHC containers.</td><td>Not specified, inquire</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-rent/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>1500</td><td>Lamudi</td><td>Laser-leveled floor, metallic gate. Industrial zone VW Finsa. Implies suitability for DHC containers.</td><td>35000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-rent/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>Not specified (large)</td><td>Lamudi</td><td>Two docks with leveling ramp, 98.26 m² offices, mezzanine, three-phase electricity (220 volt), 10.25m height at highest part. Explicitly suitable for DHC containers.</td><td>640000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-rent/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Juan Cuautlancingo Centro</td><td>Not specified (large)</td><td>Lamudi</td><td>Large maneuvering yard, 2 loading and unloading docks, 100 m² offices, bathrooms, 7m height at knee, three-phase installation, 70 kvas transformer. Explicitly suitable for DHC containers.</td><td>50000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-rent/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>Not specified (large)</td><td>Lamudi</td><td>Two transformers (112 kvas and 75 kvas), 250 m² offices, 8 docks for loading/unloading, trailer entrance. Explicitly suitable for DHC containers.</td><td>Not specified, inquire</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-rent/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>500</td><td>iCasas</td><td>Best industrial zone, meters from Periférico. No explicit dock, but industrial context implies suitability.</td><td>40000</td><td><a href="https://www.icasas.mx/renta/industriales-naves-puebla-cuautlancingo-4_20_21_0_1619_0" target="_blank" class="table-link">iCasas Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>1400</td><td>iCasas</td><td>Industrial Zone Cuautlancingo, Puebla. No explicit dock, but industrial context implies suitability.</td><td>98000</td><td><a href="https://www.icasas.mx/renta/industriales-naves-puebla-cuautlancingo-4_20_21_0_1619_0" target="_blank" class="table-link">iCasas Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>2788</td><td>iCasas</td><td>Available for delivery June 2023, constructed warehouse with clear height. No explicit dock, but industrial context implies suitability.</td><td>288550.43</td><td><a href="https://www.icasas.mx/renta/industriales-naves-puebla-cuautlancingo-4_20_21_0_1619_0" target="_blank" class="table-link">iCasas Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>2500</td><td>iCasas</td><td>Available for delivery June 2023, constructed warehouse. No explicit dock, but industrial context implies suitability.</td><td>258739.92</td><td><a href="https://www.icasas.mx/renta/industriales-naves-puebla-cuautlancingo-4_20_21_0_1619_0" target="_blank" class="table-link">iCasas Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>600</td><td>iCasas</td><td>Located in Corredor Industrial Sánctorum, VW and FINSA Zone, hydraulic concrete floor, gabled roof. No explicit dock, but industrial context implies suitability.</td><td>35000</td><td><a href="https://www.icasas.mx/renta/industriales-naves-puebla-cuautlancingo-4_20_21_0_1619_0" target="_blank" class="table-link">iCasas Link</a></td></tr>
+                        <tr><td>Pueblo Sanctorum</td><td>1500</td><td>CENTURY 21 CEE Diez</td><td>3 half bathrooms, space for office area, unloading zone. Unloading zone implies suitability for DHC containers.</td><td>60000</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-sanctorum.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Pueblo Sanctorum</td><td>500</td><td>YKA BIENES RAICES</td><td>2 rooms, refrigeration chamber/sanitary curve, office area, bathrooms, parking. No explicit dock, but industrial context implies suitability.</td><td>95000</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-sanctorum.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Pueblo Sanctorum</td><td>1375</td><td>Grupo Inmobiliario</td><td>Loading dock (andén) for commercial or storage use. Explicitly suitable for DHC containers.</td><td>96250</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-sanctorum.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Pueblo Sanctorum</td><td>1400</td><td>Century21 El Cielo (C21)</td><td>11m free height, 15 cm thick hydraulic concrete floor, loading dock (andén), roof ventilations, offices on 2 levels. Explicitly suitable for DHC containers.</td><td>98000</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-sanctorum.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Pueblo Sanctorum</td><td>2000</td><td>maria jose matanzo</td><td>10m free interior height, sheet roof, hydraulic concrete floor, 1 dock (anden), offices, dining area, parking. Explicitly suitable for DHC containers.</td><td>140000</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-sanctorum.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Parque Industrial Finsa</td><td>500</td><td>EXCELENCIA EN SERVICIOS INMOBILIARIOS</td><td>Storage area, one-level office, half bathroom, metallic structure roofs, hydraulic concrete floor, 5m and 7.5m heights, entrance for trailers and Torton trucks. Trailer/Torton entrance implies suitability for DHC containers.</td><td>45000</td><td><a href="https://www.vivanuncios.com.mx/s-renta-bodegas/puebla/parque+industrial/v1c1282l1020q0p1" target="_blank" class="table-link">Vivanuncios Link</a></td></tr>
+                        <tr><td>Parque industrial Cuautlancingo Corredor Empresarial</td><td>1274</td><td>Inmobiliaria Vitalia</td><td>95 m² office/meeting room/bathroom area, 460 m² maneuvering yard, 6m to 8.5m heights, 15.3m front, new condition, cistern, electricity, drainage, red brick walls, polished reinforced concrete floor. Trailer access implies suitability for DHC containers.</td><td>80000</td><td><a href="https://www.vivanuncios.com.mx/s-renta-bodegas/puebla/parque+industrial/v1c1282l1020q0p1" target="_blank" class="table-link">Vivanuncios Link</a></td></tr>
+                        <tr><td>San Juan Cuautlancingo Centro</td><td>1000</td><td>Lamudi</td><td>Wall height 9.50m, apex 12.0m, curved roof, loading dock and access, 25cm thick concrete floor, shared dock, offices, dining area. Explicitly suitable for DHC containers.</td><td>14000000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-sale/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Juan Cuautlancingo Centro</td><td>795.22</td><td>Lamudi</td><td>Commercial use for warehouse, offices (678.87 m²), dining room, dormitories, bathrooms, shipping area, reception, parking, recreational area. Parking and Docks: 167.59 m². Explicitly suitable for DHC containers.</td><td>41523157</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-sale/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>4 Caminos</td><td>2799.04</td><td>Lamudi</td><td>Commercial use, guardhouse, private/visitor parking, double-height reception, dining room, bathrooms, changing room, storage, cold room, forklift storage, trailer parking, loading dock, exterior warehouse, dormitories, machine area, 15,000 L cistern. Explicitly suitable for DHC containers.</td><td>48000000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-sale/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Juan Cuautlancingo Centro</td><td>2250</td><td>Lamudi</td><td>Two-phase light, 80 m² offices, trailer entrance, potable water. Trailer entrance implies suitability for DHC containers.</td><td>22000000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-sale/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Juan Cuautlancingo Centro</td><td>625</td><td>Lamudi</td><td>Allows movement and operation of large vehicles. Implies suitability for DHC containers.</td><td>35000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-rent/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="text-2xl font-bold text-[#333333] mb-4">Industrial Warehouses for Sale in Cuautlancingo</h3>
+            <div class="table-container bg-white rounded-lg shadow-lg mb-8">
+                <table id="cuautlancingoSaleTable" class="w-full text-sm">
+                    <thead>
+                        <tr class="rounded-t-lg overflow-hidden">
+                            <th data-sortable="true" data-column-type="string">Location (Specific Area)</th>
+                            <th data-sortable="true" data-column-type="number">Square Meters (approx.)</th>
+                            <th data-sortable="true" data-column-type="string">Real Estate Handler (Platform)</th>
+                            <th data-sortable="true" data-column-type="string">Key Features & Dock Suitability</th>
+                            <th data-sortable="true" data-column-type="price">Price (MXN)</th>
+                            <th>Source URL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>La Trinidad Sanctorum</td><td>2024</td><td>Lamudi</td><td>Industrial land use, guardhouse and offices at front, gable-roofed metal structure warehouse with mezzanine at back, two-phase power supply. Industrial use implies suitability for DHC containers.</td><td>22523000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-sale/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Juan Cuautlancingo Centro</td><td>2250</td><td>Lamudi</td><td>Two-phase light, 80 m² offices, trailer entrance, potable water. Trailer entrance implies suitability for DHC containers.</td><td>22000000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-sale/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>2335</td><td>Lamudi / EXSIN</td><td>Total surface 13,639 m², 790m from highway, 1,000m to VW/Finsa. Reinforced concrete floor (25cm thick), loading dock for trailers, 13m wide internal street, fire suppression system, offices. Explicitly suitable for DHC containers.</td><td>120000000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-sale/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>1246</td><td>Lamudi</td><td>Three-phase light installations. Rectangular shape with 20m front meets width requirement. Industrial context implies suitability for DHC containers.</td><td>6500000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-sale/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Juan Cuautlancingo Centro</td><td>795.22</td><td>Lamudi</td><td>Property for commercial use as warehouse, offices (678.87 m²), shipping area, reception, parking and docks (167.59 m²). Explicitly suitable for DHC containers.</td><td>41523157</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-sale/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>1400</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>22000000</td><td><a href="https://propiedades.com/cuautlancingo/naves-industriales-venta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>1681</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>48000000</td><td><a href="https://propiedades.com/cuautlancingo/naves-industriales-venta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>1260</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>10200000</td><td><a href="https://propiedades.com/cuautlancingo/naves-industriales-venta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>1975</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>35999999</td><td><a href="https://propiedades.com/cuautlancingo/naves-industriales-venta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>1743</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>33500000</td><td><a href="https://propiedades.com/cuautlancingo/naves-industriales-venta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>4 Caminos</td><td>2799.04</td><td>Lamudi</td><td>Commercial use, guardhouse, private/visitor parking, double-height reception, dining room, bathrooms, changing room, storage, cold room, forklift storage, trailer parking, loading dock, exterior warehouse, dormitories, machine area, 15,000 L cistern. Explicitly suitable for DHC containers.</td><td>48000000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-sale/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>1983</td><td>Lamudi</td><td>Metal structure columns, offices, covered garage, guardhouse, recording studio, cistern, radio frequency antenna, 15cm thick concrete floor, onion-type fans, 5-ton traveling crane, 5m clear height, 150 kva substation, three-phase power. Trailer parking and crane strongly imply suitability for DHC containers.</td><td>33000000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-sale/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>2642</td><td>MercadoLibre</td><td>No explicit construction, dock, or width details. Requires further inquiry.</td><td>211360</td><td><a href="https://inmuebles.mercadolibre.com.mx/locales-en-san-lorenzo-almecatla-puebla" target="_blank" class="table-link">MercadoLibre Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>1858</td><td>MercadoLibre</td><td>No explicit construction, dock, or width details. Requires further inquiry.</td><td>9290</td><td><a href="https://inmuebles.mercadolibre.com.mx/locales-en-san-lorenzo-almecatla-puebla" target="_blank" class="table-link">MercadoLibre Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>2642</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>211360</td><td><a href="https://propiedades.com/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>2200</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>126000</td><td><a href="https://propiedades.com/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>1600</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>88200</td><td><a href="https://propiedades.com/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
-        <!-- Industrial Warehouses for Sale in Cuautlancingo -->
-        <section id="sale-cuautlancingo" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Venta - Cuautlancingo</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterSaleCuautlancingoLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleCuautlancingoMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterSaleCuautlancingoMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleCuautlancingoMinPrice" placeholder="Precio Mínimo (USD)" class="filter-input">
-                        <input type="number" id="filterSaleCuautlancingoMaxPrice" placeholder="Precio Máximo (USD)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableSaleCuautlancingo" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_sale_00" target="_blank" class="text-blue-600 hover:underline">Zona Sur</a></td><td>Cuautlancingo</td><td>72700</td><td>500</td><td>450,000</td><td>Ideal para PYMES, fácil acceso</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_sale_07" target="_blank" class="text-blue-600 hover:underline">Cerca Parque Finsa</a></td><td>Cuautlancingo</td><td>72700</td><td>750</td><td>700,000</td><td>Excelente inversión, nave nueva</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_sale_01" target="_blank" class="text-blue-600 hover:underline">Pueblo</a></td><td>Cuautlancingo</td><td>72700</td><td>2,500</td><td>1,800,000</td><td>Uso de suelo industrial, cerca de vialidades principales</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_sale_02" target="_blank" class="text-blue-600 hover:underline">Sanctorum Limitrofe</a></td><td>Cuautlancingo</td><td>72700</td><td>3,000</td><td>2,200,000</td><td>Nave industrial con oficinas, amplio frente</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_sale_03" target="_blank" class="text-blue-600 hover:underline">Libramiento Puebla-Cholula</a></td><td>Cuautlancingo</td><td>72700</td><td>1,800</td><td>1,500,000</td><td>Excelente visibilidad, ideal para logística</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_sale_04" target="_blank" class="text-blue-600 hover:underline">Parque Industrial Finsa</a></td><td>Cuautlancingo</td><td>72700</td><td>1,000</td><td>950,000</td><td>Con patio de maniobras, seguridad</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_sale_05" target="_blank" class="text-blue-600 hover:underline">Camino Real a Sanctorum</a></td><td>Cuautlancingo</td><td>72700</td><td>4,000</td><td>3,500,000</td><td>Propiedad con terreno excedente, ideal para expansión</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/cuau_sale_06" target="_blank" class="text-blue-600 hover:underline">Zona Industrial FINSA</a></td><td>Cuautlancingo</td><td>72700</td><td>2,200</td><td>1,750,000</td><td>Bodega seminueva, con área de carga y descarga</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-[#4A6D6A] section-header">Detailed Property Analysis: Sanctorum</h2>
+            <p class="text-gray-700 mb-6">Sanctorum, a distinct area within Cuautlancingo, is a highly industrialized zone, primarily recognized for its direct adjacency to the Volkswagen plant and its strategic location near major highways. This makes it a prime location for logistics and manufacturing operations. Many properties listed under Cuautlancingo are specifically located in Sanctorum.</p>
+
+            <h3 class="text-2xl font-bold text-[#333333] mb-4">Industrial Warehouses for Rent in Sanctorum</h3>
+            <div class="table-container bg-white rounded-lg shadow-lg mb-8">
+                <table id="sanctorumRentTable" class="w-full text-sm">
+                    <thead>
+                        <tr class="rounded-t-lg overflow-hidden">
+                            <th data-sortable="true" data-column-type="string">Location (Specific Area)</th>
+                            <th data-sortable="true" data-column-type="number">Square Meters (approx.)</th>
+                            <th data-sortable="true" data-column-type="string">Real Estate Handler (Platform)</th>
+                            <th data-sortable="true" data-column-type="string">Key Features & Dock Suitability</th>
+                            <th data-sortable="true" data-column-type="price">Price (MXN/Month)</th>
+                            <th>Source URL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>La Trinidad Sanctorum</td><td>2375</td><td>Lamudi</td><td>New construction (90% complete), turnkey project, 500m from Mexico-Puebla Highway, opposite VW plant. Implies industrial suitability for DHC containers.</td><td>Not specified, inquire</td><td><a href="https://www.lamudi.com.mx/search-result/bodegas-en-renta-de-500-metros/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>863.05</td><td>Lamudi</td><td>New construction (90% complete), turnkey project, 500m from Mexico-Puebla Highway, opposite VW plant. Implies industrial suitability for DHC containers.</td><td>Not specified, inquire</td><td><a href="https://www.lamudi.com.mx/search-result/bodegas-en-renta-de-500-metros/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>619.62</td><td>Lamudi</td><td>New construction (90% complete), turnkey project, 500m from Mexico-Puebla Highway, opposite VW plant. Implies industrial suitability for DHC containers.</td><td>Not specified, inquire</td><td><a href="https://www.lamudi.com.mx/search-result/bodegas-en-renta-de-500-metros/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>1140</td><td>Lamudi</td><td>Floor capacity 250 kg/cm², 8m height, translucent sheets, available docks, patio, 10 parking spaces. Explicitly suitable for DHC containers.</td><td>Not specified, inquire</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-rent/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>1500</td><td>Lamudi</td><td>Laser-leveled floor, metallic gate. Industrial zone VW Finsa. Implies suitability for DHC containers.</td><td>35000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-rent/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>Not specified (large)</td><td>Lamudi</td><td>Two docks with leveling ramp, 98.26 m² offices, mezzanine, three-phase electricity (220 volt), 10.25m height at highest part. Explicitly suitable for DHC containers.</td><td>640000</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-rent/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>La Trinidad Sanctorum</td><td>Not specified (large)</td><td>Lamudi</td><td>Two transformers (112 kvas and 75 kvas), 250 m² offices, 8 docks for loading/unloading, trailer entrance. Explicitly suitable for DHC containers.</td><td>Not specified, inquire</td><td><a href="https://www.lamudi.com.mx/puebla/cuautlancingo/comercial/industria-almacen/for-rent/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>Parque Industrial Finsa</td><td>500</td><td>EXCELENCIA EN SERVICIOS INMOBILIARIOS</td><td>Storage area, one-level office, half bathroom, metallic structure roofs, hydraulic concrete floor, 5m and 7.5m heights, entrance for trailers and Torton trucks. Trailer/Torton entrance implies suitability for DHC containers.</td><td>45000</td><td><a href="https://www.vivanuncios.com.mx/s-renta-bodegas/puebla/parque+industrial/v1c1282l1020q0p1" target="_blank" class="table-link">Vivanuncios Link</a></td></tr>
+                        <tr><td>Pueblo Sanctorum</td><td>1500</td><td>CENTURY 21 CEE Diez</td><td>3 half bathrooms, space for office area, unloading zone. Unloading zone implies suitability for DHC containers.</td><td>60000</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-sanctorum.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Pueblo Sanctorum</td><td>500</td><td>YKA BIENES RAICES</td><td>2 rooms, refrigeration chamber/sanitary curve, office area, bathrooms, parking. No explicit dock, but industrial context implies suitability.</td><td>95000</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-sanctorum.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Pueblo Sanctorum</td><td>1375</td><td>Grupo Inmobiliario</td><td>Loading dock (andén) for commercial or storage use. Explicitly suitable for DHC containers.</td><td>96250</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-sanctorum.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Pueblo Sanctorum</td><td>1400</td><td>Century21 El Cielo (C21)</td><td>11m free height, 15 cm thick hydraulic concrete floor, loading dock (andén), roof ventilations, offices on 2 levels. Explicitly suitable for DHC containers.</td><td>98000</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-sanctorum.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Pueblo Sanctorum</td><td>2000</td><td>maria jose matanzo</td><td>10m free interior height, sheet roof, hydraulic concrete floor, 1 dock (anden), offices, dining area, parking. Explicitly suitable for DHC containers.</td><td>140000</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-sanctorum.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>1140</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>95000</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>986</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>78400</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>2275</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>190000</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>2300</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>149500</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>1500</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>78000</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>1000</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>130000</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>1400</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>98000</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>1800</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>144000</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>1100</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>88000</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>2500</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>291870</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>1743</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>174300</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>2180</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>150000</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>600</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>40000</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>1200</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>132000</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>Sanctorum</td><td>2192</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>249152</td><td><a href="https://propiedades.com/sanctorum-cuautlancingo/naves-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
-        <!-- Industrial Warehouses for Rent in Sanctorum -->
-        <section id="rent-sanctorum" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Renta - Sanctorum (Cuautlancingo)</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterRentSanctorumLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentSanctorumMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterRentSanctorumMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentSanctorumMinPrice" placeholder="Precio Mínimo (USD/mes)" class="filter-input">
-                        <input type="number" id="filterRentSanctorumMaxPrice" placeholder="Precio Máximo (USD/mes)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableRentSanctorum" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD/mes) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_rent_00" target="_blank" class="text-blue-600 hover:underline">Zona Sur</a></td><td>Sanctorum</td><td>72700</td><td>500</td><td>2,500</td><td>Conectividad a vialidades, seguridad privada</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_rent_07" target="_blank" class="text-blue-600 hover:underline">Cerca Periférico</a></td><td>Sanctorum</td><td>72700</td><td>600</td><td>3,000</td><td>Acceso controlado, ideal para pequeña distribución</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_rent_01" target="_blank" class="text-blue-600 hover:underline">Centro</a></td><td>Sanctorum</td><td>72700</td><td>900</td><td>4,200</td><td>Excelente ubicación, fácil acceso</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_rent_02" target="_blank" class="text-blue-600 hover:underline">Zona Industrial</a></td><td>Sanctorum</td><td>72700</td><td>1,800</td><td>8,000</td><td>Andenes, seguridad, piso de alta resistencia</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_rent_03" target="_blank" class="text-blue-600 hover:underline">Cerca Autopista México-Puebla</a></td><td>Sanctorum</td><td>72700</td><td>1,100</td><td>5,000</td><td>Ideal para distribución, amplio estacionamiento</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_rent_04" target="_blank" class="text-blue-600 hover:underline">Amozoc Periferico</a></td><td>Sanctorum</td><td>72700</td><td>1,400</td><td>6,500</td><td>Con área de oficinas, altura libre 10m</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_rent_05" target="_blank" class="text-blue-600 hover:underline">Barrio del Cristo</a></td><td>Sanctorum</td><td>72700</td><td>700</td><td>3,500</td><td>Bodega pequeña, con patio privado</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_rent_06" target="_blank" class="text-blue-600 hover:underline">Avenida Principal</a></td><td>Sanctorum</td><td>72700</td><td>2,100</td><td>9,000</td><td>Nave industrial moderna, con todos los servicios</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-[#4A6D6A] section-header">Detailed Property Analysis: Ocotlán</h2>
+            <p class="text-gray-700 mb-6">The available data for Ocotlán within the specified size range is limited. The primary property identified is located in San Francisco Ocotlán, which is a locality within Coronango, near Puebla.</p>
+
+            <h3 class="text-2xl font-bold text-[#333333] mb-4">Industrial Warehouses for Rent in Ocotlán</h3>
+            <div class="table-container bg-white rounded-lg shadow-lg mb-8">
+                <table id="ocotlanRentTable" class="w-full text-sm">
+                    <thead>
+                        <tr class="rounded-t-lg overflow-hidden">
+                            <th data-sortable="true" data-column-type="string">Location (Specific Area)</th>
+                            <th data-sortable="true" data-column-type="number">Square Meters (approx.)</th>
+                            <th data-sortable="true" data-column-type="string">Real Estate Handler (Platform)</th>
+                            <th data-sortable="true" data-column-type="string">Key Features & Dock Suitability</th>
+                            <th data-sortable="true" data-column-type="price">Price (MXN/Month)</th>
+                            <th>Source URL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Pueblo San Francisco Ocotlán, Coronango</td><td>3000</td><td>Bas Chaltel Inmobiliaria</td><td>600 m² maneuvering yard, 14m height at center, 3 docks inside, translucent roof, 20,000L cistern, 15cm concrete floor (300 kg/cm³ resistance), offices, 24-hour surveillance. Explicitly suitable for DHC containers.</td><td>330000</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-san-francisco-ocotlan.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Pueblo San Francisco Ocotlán, Coronango</td><td>550</td><td>maria jose matanzo</td><td>40 m² offices, 3 minutes from Mexico-Puebla highway, entrance for trailers, three-phase electrical energy. Trailer entrance implies suitability for DHC containers.</td><td>46750</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-san-francisco-ocotlan.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Pueblo San Francisco Ocotlán, Coronango</td><td>2200</td><td>EXCELENCIA EN SERVICIOS INMOBILIARIOS</td><td>New warehouse near Periférico and Autopista by VW, maneuvering yard, storage area, half bathroom, arch roof, hydraulic concrete floor, 5m and 7.5m heights, entrance for trailers and Torton trucks, electricity (112.5 kva substation), water, drainage, telephone, internet, cable. Trailer/Torton entrance implies suitability for DHC containers.</td><td>100000</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-san-francisco-ocotlan.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Pueblo San Francisco Ocotlán, Coronango</td><td>800</td><td>maria jose matanzo</td><td>40 m² offices, 2 bathrooms, maneuvering yard, entrance for trailers, in a small industrial park. Trailer entrance implies suitability for DHC containers.</td><td>60000</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-san-francisco-ocotlan.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Pueblo San Francisco Ocotlán, Coronango</td><td>583</td><td>maria jose matanzo</td><td>30 m² offices and bathrooms, entrance for trailers and three-phase electricity. Trailer entrance implies suitability for DHC containers.</td><td>40810</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-san-francisco-ocotlan.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                        <tr><td>Pueblo San Francisco Ocotlán, Coronango</td><td>600</td><td>maria jose matanzo</td><td>Three-phase electricity (30 kva), strategic location, 3 minutes from the periférico. No explicit dock, but industrial context implies suitability.</td><td>39000</td><td><a href="https://www.inmuebles24.com/bodegas-comerciales-en-pueblo-san-francisco-ocotlan.html" target="_blank" class="table-link">Inmuebles24 Link</a></td></tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
-        <!-- Industrial Warehouses for Sale in Sanctorum -->
-        <section id="sale-sanctorum" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Venta - Sanctorum (Cuautlancingo)</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterSaleSanctorumLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleSanctorumMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterSaleSanctorumMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleSanctorumMinPrice" placeholder="Precio Mínimo (USD)" class="filter-input">
-                        <input type="number" id="filterSaleSanctorumMaxPrice" placeholder="Precio Máximo (USD)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableSaleSanctorum" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                             <tr><td><a href="https://ejemplo.com/propiedad/sanc_sale_00" target="_blank" class="text-blue-600 hover:underline">Sanctorum Norte</a></td><td>Sanctorum</td><td>72700</td><td>500</td><td>420,000</td><td>Excelente para pequeña empresa, cerca de servicios</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_sale_07" target="_blank" class="text-blue-600 hover:underline">Periférico Este</a></td><td>Sanctorum</td><td>72700</td><td>700</td><td>600,000</td><td>Nave industrial seminueva, con oficinas</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_sale_01" target="_blank" class="text-blue-600 hover:underline">Pueblo</a></td><td>Sanctorum</td><td>72700</td><td>3,500</td><td>2,800,000</td><td>Nave a estrenar, con subestación eléctrica</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_sale_02" target="_blank" class="text-blue-600 hover:underline">Periferico Ecológico</a></td><td>Sanctorum</td><td>72700</td><td>2,800</td><td>2,100,000</td><td>Amplio patio de maniobras, excelente ubicación</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_sale_03" target="_blank" class="text-blue-600 hover:underline">Zona Industrial</a></td><td>Sanctorum</td><td>72700</td><td>1,500</td><td>1,200,000</td><td>Bodega con oficinas y baños, seguridad 24/7</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_sale_04" target="_blank" class="text-blue-600 hover:underline">Autopista México-Puebla Salida</a></td><td>Sanctorum</td><td>72700</td><td>4,200</td><td>3,500,000</td><td>Gran visibilidad, acceso directo a carretera</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_sale_05" target="_blank" class="text-blue-600 hover:underline">Colonia La Paz</a></td><td>Sanctorum</td><td>72700</td><td>1,600</td><td>1,300,000</td><td>Bodega con opción a expansión, cerca de zonas habitacionales</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanc_sale_06" target="_blank" class="text-blue-600 hover:underline">Avenida Principal</a></td><td>Sanctorum</td><td>72700</td><td>2,000</td><td>1,600,000</td><td>Uso de suelo industrial, con área de carga y descarga</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-[#4A6D6A] section-header">Detailed Property Analysis: San Lorenzo Almecatla</h2>
+            <p class="text-gray-700 mb-6">San Lorenzo Almecatla is a critical industrial hub, particularly noted for its industrial park that serves as a key location for Volkswagen suppliers and logistics centers.</p>
+
+            <h3 class="text-2xl font-bold text-[#333333] mb-4">Industrial Warehouses for Rent in San Lorenzo Almecatla</h3>
+            <div class="table-container bg-white rounded-lg shadow-lg mb-8">
+                <table id="almecatlaRentTable" class="w-full text-sm">
+                    <thead>
+                        <tr class="rounded-t-lg overflow-hidden">
+                            <th data-sortable="true" data-column-type="string">Location (Specific Area)</th>
+                            <th data-sortable="true" data-column-type="number">Square Meters (approx.)</th>
+                            <th data-sortable="true" data-column-type="string">Real Estate Handler (Platform)</th>
+                            <th data-sortable="true" data-column-type="string">Key Features & Dock Suitability</th>
+                            <th data-sortable="true" data-column-type="price">Price (MXN/Month)</th>
+                            <th>Source URL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>San Lorenzo Almecatla</td><td>1800</td><td>Lamudi</td><td>Loading dock, trailer entrance, closed maneuvering yard, 9m clear height, offices and bathrooms, three-phase electricity, hydraulic floor (250 kg/cm² resistance), translucent sheets. Explicitly suitable for DHC containers.</td><td>216000</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>1500</td><td>Lamudi</td><td>Loading dock, trailer entrance, offices on 3 floors with roof garden, 10m height at knee, 12m at highest part. Explicitly suitable for DHC containers.</td><td>142500</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>700</td><td>Lamudi</td><td>Controlled access and 24-hour surveillance, three-phase light, trailer entrance, 9m height at knee, 11m at highest part. Trailer entrance implies suitability for DHC containers.</td><td>42000</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>Pueblo La Trinidad Sanctorum, San Lorenzo Almecatla</td><td>1500</td><td>Lamudi</td><td>Trailer entrance, integrated offices, three-phase light, translucent sheets, hydraulic floor. Trailer entrance implies suitability for DHC containers.</td><td>78000</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>600</td><td>Lamudi</td><td>30m² office space, bathroom, 8m clear height, guardhouse for controlled access, wide street for maneuvers. No explicit dock, but industrial context implies suitability.</td><td>80</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>2642</td><td>Lamudi</td><td>120m² offices, 2 bathrooms, cistern, 600m² maneuvering yard, three-phase light (220cv), dining room, guardhouse. No explicit dock, but industrial context implies suitability.</td><td>185000</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>500</td><td>Lamudi</td><td>30m² offices, 2 bathrooms, 10,000L cistern, parking (4 cars), 8m clear height, three-phase light (220cv). No explicit dock, but industrial context implies suitability.</td><td>40000</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>2335</td><td>Lamudi</td><td>Front gate 15m wide with 5m clear height, internal access street 1,000m² long, 13m wide. Each nave has its respective loading dock for trailers diagonally. Explicitly suitable for DHC containers.</td><td>630995</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>1195</td><td>Lamudi</td><td>Front gate with 5m clear height, internal access street 1,000m² long, 13m wide. Each nave has its respective loading dock for trailers diagonally. Explicitly suitable for DHC containers.</td><td>408815</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>2539.88</td><td>Lamudi</td><td>Front: 23.89m, Depth: 106.29m. Maneuvering yard: 789.70m². 2 docks with hydraulic leveling ramp, 1 ramp. 10m height, 100m² offices. Explicitly suitable for DHC containers.</td><td>292086</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>1500</td><td>Lamudi</td><td>Office 160m². Two docks, Torton truck and van entrance to the nave, two bathrooms, closed circuit. Explicitly suitable for DHC containers.</td><td>109500</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>1400</td><td>Lamudi</td><td>Offices: 150m² fully equipped. Bi-phase light, hydraulic floor (250 kg/m² resistance), translucent sheets, 8m clear height. Trailer entrance implies suitability for DHC containers.</td><td>98000</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>1140</td><td>Lamudi</td><td>Front patio 2652 m². Internal access street 1,000m² long, 13m wide. Front gate with 5m clear height. Has its respective loading dock for trailers diagonally. Explicitly suitable for DHC containers.</td><td>222060</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>890.36</td><td>Lamudi</td><td>Naves with 10m heights, made of block (walls) and sheet roofs. Structure allows no interior columns. Docks can be built according to client needs. User's willingness for changes makes this viable.</td><td>71229</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>968.41</td><td>Lamudi</td><td>Naves with 10m heights, made of block (walls) and sheet roofs. Structure allows no interior columns. Docks can be built according to client needs. User's willingness for changes makes this viable.</td><td>77473</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>1507.59</td><td>Lamudi</td><td>Naves with 10m heights, made of block (walls) and sheet roofs. Structure allows no interior columns. Docks can be built according to client needs. User's willingness for changes makes this viable.</td><td>120607</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>986.90</td><td>Lamudi</td><td>Naves with 10m heights, made of block (walls) and sheet roofs. Structure allows no interior columns. Docks can be built according to client needs. User's willingness for changes makes this viable.</td><td>78952</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>2127.06</td><td>Lamudi</td><td>Front: 20.00m, Depth: 106.29m. Maneuvering yard: 673.72m². 4 docks with hydraulic leveling ramp, 1 ramp. 10m height, 150m² offices. Explicitly suitable for DHC containers.</td><td>244612</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>1743</td><td>Lamudi</td><td>Loading dock and trailer entrance, 9m clear height, three-phase light, offices and bathrooms, hydraulic floor (250 kg/cm² resistance). Explicitly suitable for DHC containers.</td><td>174300</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>2200</td><td>Lamudi</td><td>Offices: 104 m². Height: Min 6.9m - max. 8.5m. 7 docks (with leveling ramp), 2 ramps, 1 ground-level entrance. Explicitly suitable for DHC containers.</td><td>130</td><td><a href="https://www.lamudi.com.mx/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta/" target="_blank" class="table-link">Lamudi Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>2642</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>211360</td><td><a href="https://propiedades.com/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>2200</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>126000</td><td><a href="https://propiedades.com/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                        <tr><td>San Lorenzo Almecatla</td><td>1600</td><td>Propiedades.com</td><td>No explicit dock or width details, but within size range.</td><td>88200</td><td><a href="https://propiedades.com/san-lorenzo-almecatla-cuautlancingo/bodegas-industriales-renta" target="_blank" class="table-link">Propiedades.com Link</a></td></tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
-        <!-- Industrial Warehouses for Rent - Santa María Coronango -->
-        <section id="rent-coronango" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Renta - Santa María Coronango</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterRentCoronangoLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentCoronangoMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterRentCoronangoMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentCoronangoMinPrice" placeholder="Precio Mínimo (USD/mes)" class="filter-input">
-                        <input type="number" id="filterRentCoronangoMaxPrice" placeholder="Precio Máximo (USD/mes)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableRentCoronango" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD/mes) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/coro_rent_01" target="_blank" class="text-blue-600 hover:underline">Parque Industrial Gema</a></td><td>Sta. M. Coronango</td><td>72670</td><td>1,300</td><td>6,000</td><td>Nave industrial con área de oficinas, andenes</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/coro_rent_02" target="_blank" class="text-blue-600 hover:underline">Carretera Federal México-Puebla</a></td><td>Sta. M. Coronango</td><td>72700</td><td>1,000</td><td>4,500</td><td>Fácil acceso a trailers, estacionamiento</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/coro_rent_03" target="_blank" class="text-blue-600 hover:underline">Zona Centro</a></td><td>Sta. M. Coronango</td><td>72670</td><td>700</td><td>3,500</td><td>Bodega compacta, ideal para distribución</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/coro_rent_04" target="_blank" class="text-blue-600 hover:underline">Fraccionamiento Industrial Bosques</a></td><td>Sta. M. Coronango</td><td>72670</td><td>2,000</td><td>9,000</td><td>Altura libre 12m, seguridad 24/7</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/coro_rent_05" target="_blank" class="text-blue-600 hover:underline">San Antonio Mihuacán</a></td><td>Sta. M. Coronango</td><td>72700</td><td>580</td><td>2,900</td><td>Bodega nueva, con patio de maniobras</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
+        <footer class="text-center pt-8 border-t border-[#4A6D6A] mt-16">
+            <h2 class="text-3xl font-bold text-[#4A6D6A] section-header">Conclusions and Recommendations</h2>
+            <p class="text-lg text-gray-700 mb-6">
+                The industrial real estate market in Cuautlancingo, Sanctorum, Ocotlán, and San Lorenzo Almecatla, Puebla, presents a robust selection of warehouses suitable for logistics and manufacturing operations, particularly those requiring specific dimensions and container handling capabilities. The strategic location near the Volkswagen plant and major industrial parks significantly enhances the appeal of these areas, providing established infrastructure and a supportive industrial ecosystem.
+            </p>
+            <h3 class="text-2xl font-bold text-[#333333] mb-4">Key Recommendations for NeoProfile:</h3>
+            <ul class="list-disc list-inside text-left mx-auto max-w-2xl text-lg text-gray-700 space-y-2">
+                <li><span class="font-bold">Prioritize Properties with Explicit Dock Details:</span> Focus initial inquiries on properties explicitly mentioning "andén," "rampa," or "trailer entrance" with sufficient height and maneuvering space.</li>
+                <li><span class="font-bold">Leverage "Turnkey" and "Rehabilitation" Opportunities:</span> Actively investigate properties described as "90% complete" or requiring "docks to be rehabilitated" to potentially achieve lower initial costs or greater customization.</li>
+                <li><span class="font-bold">Verify Dimensions and Dock Specifications:</span> For properties where width is not explicitly stated, a direct inquiry with the real estate handler is crucial to confirm the minimum 12-meter width and DHC container suitability.</li>
+                <li><span class="font-bold">Consider Long-Term Operational Costs:</span> When evaluating "best cost," factor in the long-term operational efficiencies offered by newer constructions or properties with modern features.</li>
+                <li><span class="font-bold">Engage Directly with Real Estate Handlers:</span> Direct engagement with listed platforms (Lamudi, iCasas, Propiedades.com, etc.) is essential for precise details, current availability, and price negotiation.</li>
+                <li><span class="font-bold">Explore Flexible Options:</span> Properties that can be subdivided or combined offer flexibility in meeting exact size requirements while optimizing cost.</li>
+            </ul>
+        </footer>
 
-        <!-- Industrial Warehouses for Sale - Santa María Coronango -->
-        <section id="sale-coronango" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Venta - Santa María Coronango</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterSaleCoronangoLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleCoronangoMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterSaleCoronangoMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleCoronangoMinPrice" placeholder="Precio Mínimo (USD)" class="filter-input">
-                        <input type="number" id="filterSaleCoronangoMaxPrice" placeholder="Precio Máximo (USD)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableSaleCoronango" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/coro_sale_01" target="_blank" class="text-blue-600 hover:underline">Zona Industrial Coronango</a></td><td>Sta. M. Coronango</td><td>72670</td><td>1,500</td><td>1,300,000</td><td>Amplio estacionamiento, cerca de VW</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/coro_sale_02" target="_blank" class="text-blue-600 hover:underline">Pueblo</a></td><td>Sta. M. Coronango</td><td>72670</td><td>800</td><td>750,000</td><td>Uso de suelo mixto, ideal para taller o pequeña manufactura</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/coro_sale_03" target="_blank" class="text-blue-600 hover:underline">Carretera Federal</a></td><td>Sta. M. Coronango</td><td>72700</td><td>2,500</td><td>2,000,000</td><td>Gran visibilidad, acceso directo a carretera</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/coro_sale_04" target="_blank" class="text-blue-600 hover:underline">Cerca Parque Finsa II</a></td><td>Sta. M. Coronango</td><td>72700</td><td>600</td><td>550,000</td><td>Bodega con oficinas y baño, seguridad</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Industrial Warehouses for Rent - San Francisco Ocotlán -->
-        <section id="rent-ocotlan" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Renta - San Francisco Ocotlán</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterRentOcotlanLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentOcotlanMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterRentOcotlanMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentOcotlanMinPrice" placeholder="Precio Mínimo (USD/mes)" class="filter-input">
-                        <input type="number" id="filterRentOcotlanMaxPrice" placeholder="Precio Máximo (USD/mes)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableRentOcotlan" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD/mes) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/ocot_rent_01" target="_blank" class="text-blue-600 hover:underline">Zona Industrial</a></td><td>S. F. Ocotlán</td><td>74120</td><td>1,100</td><td>5,200</td><td>Andenes de carga, vigilancia, patio de maniobras</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/ocot_rent_02" target="_blank" class="text-blue-600 hover:underline">Cerca Parque Industrial Finsa</a></td><td>S. F. Ocotlán</td><td>74120</td><td>850</td><td>4,000</td><td>Acceso rápido a autopista, oficinas</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/ocot_rent_03" target="_blank" class="text-blue-600 hover:underline">Avenida Principal</a></td><td>S. F. Ocotlán</td><td>74120</td><td>600</td><td>3,000</td><td>Bodega con mezzanine, ideal para almacenamiento ligero</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/ocot_rent_04" target="_blank" class="text-blue-600 hover:underline">Barrio San Miguel</a></td><td>S. F. Ocotlán</td><td>74120</td><td>1,500</td><td>7,000</td><td>Altura libre 9m, amplio estacionamiento</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Industrial Warehouses for Sale - San Francisco Ocotlán -->
-        <section id="sale-ocotlan" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Venta - San Francisco Ocotlán</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterSaleOcotlanLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleOcotlanMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterSaleOcotlanMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleOcotlanMinPrice" placeholder="Precio Mínimo (USD)" class="filter-input">
-                        <input type="number" id="filterSaleOcotlanMaxPrice" placeholder="Precio Máximo (USD)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableSaleOcotlan" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/ocot_sale_01" target="_blank" class="text-blue-600 hover:underline">Zona Industrial</a></td><td>S. F. Ocotlán</td><td>74120</td><td>2,000</td><td>1,600,000</td><td>Nave industrial con oficinas, subestación</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/ocot_sale_02" target="_blank" class="text-blue-600 hover:underline">Pueblo</a></td><td>S. F. Ocotlán</td><td>74120</td><td>700</td><td>600,000</td><td>Uso de suelo industrial, cerca de vialidades</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/ocot_sale_03" target="_blank" class="text-blue-600 hover:underline">Cerca FINSA III</a></td><td>S. F. Ocotlán</td><td>74120</td><td>1,200</td><td>1,000,000</td><td>Excelente inversión, con anden de carga</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Industrial Warehouses for Rent - Ignacio Romero Vargas -->
-        <section id="rent-ignacio" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Renta - Ignacio Romero Vargas</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterRentIgnacioLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentIgnacioMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterRentIgnacioMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentIgnacioMinPrice" placeholder="Precio Mínimo (USD/mes)" class="filter-input">
-                        <input type="number" id="filterRentIgnacioMaxPrice" placeholder="Precio Máximo (USD/mes)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableRentIgnacio" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD/mes) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/ign_rent_01" target="_blank" class="text-blue-600 hover:underline">Zona Industrial</a></td><td>I. R. Vargas</td><td>72100</td><td>800</td><td>4,000</td><td>Acceso controlado, cerca de Periférico Ecológico</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/ign_rent_02" target="_blank" class="text-blue-600 hover:underline">Calle Principal</a></td><td>I. R. Vargas</td><td>72100</td><td>500</td><td>2,800</td><td>Bodega pequeña con oficina, ideal para start-ups</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/ign_rent_03" target="_blank" class="text-blue-600 hover:underline">Colonia El Riego</a></td><td>I. R. Vargas</td><td>72100</td><td>1,200</td><td>5,500</td><td>Altura libre 8m, uso de suelo industrial</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Industrial Warehouses for Sale - Ignacio Romero Vargas -->
-        <section id="sale-ignacio" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Venta - Ignacio Romero Vargas</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterSaleIgnacioLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleIgnacioMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterSaleIgnacioMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleIgnacioMinPrice" placeholder="Precio Mínimo (USD)" class="filter-input">
-                        <input type="number" id="filterSaleIgnacioMaxPrice" placeholder="Precio Máximo (USD)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableSaleIgnacio" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/ign_sale_01" target="_blank" class="text-blue-600 hover:underline">Zona Industrial</a></td><td>I. R. Vargas</td><td>72100</td><td>1,000</td><td>850,000</td><td>Nave industrial con área de carga y descarga</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/ign_sale_02" target="_blank" class="text-blue-600 hover:underline">Cerca Amozoc</a></td><td>I. R. Vargas</td><td>72100</td><td>600</td><td>550,000</td><td>Bodega con oficinas y baños, seguridad</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/ign_sale_03" target="_blank" class="text-blue-600 hover:underline">Colonia Principal</a></td><td>I. R. Vargas</td><td>72100</td><td>1,500</td><td>1,200,000</td><td>Amplio patio de maniobras, excelente visibilidad</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Industrial Warehouses for Rent - San Lorenzo Almecatla -->
-        <section id="rent-almecatla" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Renta - San Lorenzo Almecatla</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterRentAlmecatlaLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentAlmecatlaMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterRentAlmecatlaMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentAlmecatlaMinPrice" placeholder="Precio Mínimo (USD/mes)" class="filter-input">
-                        <input type="number" id="filterRentAlmecatlaMaxPrice" placeholder="Precio Máximo (USD/mes)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableRentAlmecatla" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD/mes) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/alme_rent_01" target="_blank" class="text-blue-600 hover:underline">Zona Industrial</a></td><td>S. L. Almecatla</td><td>72730</td><td>1,600</td><td>7,500</td><td>Nave industrial con anden, seguridad 24/7</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/alme_rent_02" target="_blank" class="text-blue-600 hover:underline">Cerca Carretera</a></td><td>S. L. Almecatla</td><td>72730</td><td>950</td><td>4,800</td><td>Altura libre 10m, oficinas 80m²</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/alme_rent_03" target="_blank" class="text-blue-600 hover:underline">Pueblo</a></td><td>S. L. Almecatla</td><td>72730</td><td>500</td><td>2,700</td><td>Bodega con patio pequeño, acceso a vialidades locales</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Industrial Warehouses for Sale - San Lorenzo Almecatla -->
-        <section id="sale-almecatla" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Venta - San Lorenzo Almecatla</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterSaleAlmecatlaLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleAlmecatlaMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterRentAlmecatlaMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleAlmecatlaMinPrice" placeholder="Precio Mínimo (USD)" class="filter-input">
-                        <input type="number" id="filterSaleAlmecatlaMaxPrice" placeholder="Precio Máximo (USD)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableSaleAlmecatla" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/alme_sale_01" target="_blank" class="text-blue-600 hover:underline">Zona Industrial</a></td><td>S. L. Almecatla</td><td>72730</td><td>2,000</td><td>1,500,000</td><td>Nave industrial con uso de suelo, cerca de carretera</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/alme_sale_02" target="_blank" class="text-blue-600 hover:underline">Carretera Federal</a></td><td>S. L. Almecatla</td><td>72730</td><td>700</td><td>600,000</td><td>Bodega con oficinas, buen estado de conservación</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/alme_sale_03" target="_blank" class="text-blue-600 hover:underline">Cerca Parque Finsa</a></td><td>S. L. Almecatla</td><td>72730</td><td>1,000</td><td>900,000</td><td>Excelente visibilidad, ideal para logística</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Industrial Warehouses for Rent - San Juan Cuautlancingo (distinguished by municipality) -->
-        <section id="rent-sanjuan" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Renta - San Juan Cuautlancingo</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterRentSanjuanLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentSanjuanMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterRentSanjuanMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentSanjuanMinPrice" placeholder="Precio Mínimo (USD/mes)" class="filter-input">
-                        <input type="number" id="filterRentSanjuanMaxPrice" placeholder="Precio Máximo (USD/mes)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableRentSanjuan" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD/mes) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanjuan_rent_01" target="_blank" class="text-blue-600 hover:underline">Centro</a></td><td>S. J. Cuautlancingo</td><td>72700</td><td>1,100</td><td>5,000</td><td>Bodega con acceso a avenidas principales, patio de maniobras</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanjuan_rent_02" target="_blank" class="text-blue-600 hover:underline">Zona Industrial Finsa</a></td><td>S. J. Cuautlancingo</td><td>72700</td><td>1,700</td><td>7,800</td><td>Nave industrial con andenes, seguridad 24/7</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanjuan_rent_03" target="_blank" class="text-blue-600 hover:underline">Cerca Parque Finsa</a></td><td>S. J. Cuautlancingo</td><td>72700</td><td>600</td><td>3,000</td><td>Ideal para almacenaje pequeño, oficinas 30m²</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanjuan_rent_04" target="_blank" class="text-blue-600 hover:underline">Avenida 20 de Noviembre</a></td><td>S. J. Cuautlancingo</td><td>72700</td><td>2,200</td><td>9,500</td><td>Amplio frente, altura libre 10m</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Industrial Warehouses for Sale - San Juan Cuautlancingo -->
-        <section id="sale-sanjuan" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Venta - San Juan Cuautlancingo</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterSaleSanjuanLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleSanjuanMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterSaleSanjuanMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleSanjuanMinPrice" placeholder="Precio Mínimo (USD)" class="filter-input">
-                        <input type="number" id="filterSaleSanjuanMaxPrice" placeholder="Precio Máximo (USD)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableSaleSanjuan" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanjuan_sale_01" target="_blank" class="text-blue-600 hover:underline">Zona Industrial</a></td><td>S. J. Cuautlancingo</td><td>72700</td><td>2,500</td><td>2,000,000</td><td>Nave industrial con anden, subestación eléctrica</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanjuan_sale_02" target="_blank" class="text-blue-600 hover:underline">Cerca VW</a></td><td>S. J. Cuautlancingo</td><td>72700</td><td>900</td><td>800,000</td><td>Bodega con oficinas, seguridad privada</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/sanjuan_sale_03" target="_blank" class="text-blue-600 hover:underline">Libramiento</a></td><td>S. J. Cuautlancingo</td><td>72700</td><td>1,800</td><td>1,500,000</td><td>Excelente visibilidad, acceso directo a carretera</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Industrial Warehouses for Rent - San Miguel Xoxtla -->
-        <section id="rent-xoxtla" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Renta - San Miguel Xoxtla</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterRentXoxtlaLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentXoxtlaMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterRentXoxtlaMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterRentXoxtlaMinPrice" placeholder="Precio Mínimo (USD/mes)" class="filter-input">
-                        <input type="number" id="filterRentXoxtlaMaxPrice" placeholder="Precio Máximo (USD/mes)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableRentXoxtla" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD/mes) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/xoxtla_rent_01" target="_blank" class="text-blue-600 hover:underline">Zona Industrial</a></td><td>S. M. Xoxtla</td><td>74160</td><td>1,200</td><td>5,800</td><td>Nave industrial con andenes, seguridad 24/7</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/xoxtla_rent_02" target="_blank" class="text-blue-600 hover:underline">Carretera Federal</a></td><td>S. M. Xoxtla</td><td>74160</td><td>700</td><td>3,500</td><td>Bodega pequeña con oficina, acceso fácil</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/xoxtla_rent_03" target="_blank" class="text-blue-600 hover:underline">Cerca Amozoc</a></td><td>S. M. Xoxtla</td><td>74160</td><td>1,500</td><td>7,000</td><td>Altura libre 9m, patio de maniobras</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Industrial Warehouses for Sale - San Miguel Xoxtla -->
-        <section id="sale-xoxtla" class="mb-16">
-            <h2 class="section-heading text-brand-primary mb-6 text-center">Almacenes Industriales en Venta - San Miguel Xoxtla</h2>
-            <div class="card">
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <input type="text" id="filterSaleXoxtlaLocation" placeholder="Buscar por Ubicación..." class="filter-input">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleXoxtlaMinSize" placeholder="Tamaño Mínimo (m²)" class="filter-input">
-                        <input type="number" id="filterSaleXoxtlaMaxSize" placeholder="Tamaño Máximo (m²)" class="filter-input mt-2">
-                    </div>
-                    <div>
-                        <input type="number" id="filterSaleXoxtlaMinPrice" placeholder="Precio Mínimo (USD)" class="filter-input">
-                        <input type="number" id="filterSaleXoxtlaMaxPrice" placeholder="Precio Máximo (USD)" class="filter-input mt-2">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table id="tableSaleXoxtla" class="w-full data-table border-collapse">
-                        <thead>
-                            <tr>
-                                <th data-column="0" data-type="text">Ubicación <span class="sort-icon"></span></th>
-                                <th data-column="1" data-type="text">Municipio <span class="sort-icon"></span></th>
-                                <th data-column="2" data-type="text">CP <span class="sort-icon"></span></th>
-                                <th data-column="3" data-type="number">Tamaño (m²) <span class="sort-icon"></span></th>
-                                <th data-column="4" data-type="number">Precio (USD) <span class="sort-icon"></span></th>
-                                <th data-column="5" data-type="text">Características <span class="sort-icon"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><a href="https://ejemplo.com/propiedad/xoxtla_sale_01" target="_blank" class="text-blue-600 hover:underline">Zona Industrial</a></td><td>S. M. Xoxtla</td><td>74160</td><td>2,000</td><td>1,500,000</td><td>Nave industrial con oficinas, subestación eléctrica</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/xoxtla_sale_02" target="_blank" class="text-blue-600 hover:underline">Pueblo</a></td><td>S. M. Xoxtla</td><td>74160</td><td>800</td><td>700,000</td><td>Bodega con acceso a vialidades, buen estado</td></tr>
-                            <tr><td><a href="https://ejemplo.com/propiedad/xoxtla_sale_03" target="_blank" class="text-blue-600 hover:underline">Carretera Federal</a></td><td>S. M. Xoxtla</td><td>74160</td><td>1,000</td><td>900,000</td><td>Excelente visibilidad, ideal para logística</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-brand-primary text-white py-8 px-4 text-center">
-        <div class="container mx-auto">
-            <p class="mb-2">&copy; 2025 NeoProfile S.A. de C.V. Todos los derechos reservados.</p>
-        </div>
-    </footer>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            function initializeTable(tableId, locationFilterId, minSizeFilterId, maxSizeFilterId, minPriceFilterId, maxPriceFilterId) {
-                const table = document.getElementById(tableId);
-                if (!table) return;
+            const tables = document.querySelectorAll('table');
 
-                const headers = table.querySelectorAll('th');
-                const rows = Array.from(table.querySelector('tbody').rows);
-
-                // Initialize sorting
-                headers.forEach(header => {
-                    header.addEventListener('click', function() {
-                        const column = parseInt(this.dataset.column);
-                        const type = this.dataset.type;
-                        let direction = this.dataset.direction || 'asc';
-
-                        // Reset sorting icons and directions for all headers
-                        headers.forEach(h => {
-                            if (h !== this) {
-                                delete h.dataset.direction;
-                                h.classList.remove('asc', 'desc');
-                            }
-                        });
-
-                        const isAsc = direction === 'asc';
-                        const newDirection = isAsc ? 'desc' : 'asc';
-                        this.dataset.direction = newDirection;
-                        this.classList.toggle('asc', isAsc);
-                        this.classList.toggle('desc', !isAsc);
-
-                        rows.sort((a, b) => {
-                            let valA = a.cells[column].textContent.trim();
-                            let valB = b.cells[column].textContent.trim();
-
-                            // Handle links by getting text content from within the <a> tag if it exists
-                            const linkA = a.cells[column].querySelector('a');
-                            const linkB = b.cells[column].querySelector('a');
-                            if (linkA) valA = linkA.textContent.trim();
-                            if (linkB) valB = linkB.textContent.trim();
-
-
-                            if (type === 'number') {
-                                valA = parseFloat(valA.replace(/[^0-9.-]+/g,"")); // Remove non-numeric characters for comparison
-                                valB = parseFloat(valB.replace(/[^0-9.-]+/g,""));
-                                return isAsc ? valA - valB : valB - valA;
-                            } else { // text
-                                return isAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
-                            }
-                        });
-
-                        const tbody = table.querySelector('tbody');
-                        rows.forEach(row => tbody.appendChild(row));
+            tables.forEach(table => {
+                const headers = table.querySelectorAll('th[data-sortable="true"]');
+                headers.forEach((header, index) => {
+                    header.addEventListener('click', () => {
+                        sortTableByColumn(table, index);
                     });
                 });
+            });
 
-                // Initialize filtering
-                const locationFilter = document.getElementById(locationFilterId);
-                const minSizeFilter = document.getElementById(minSizeFilterId);
-                const maxSizeFilter = document.getElementById(maxSizeFilterId);
-                const minPriceFilter = document.getElementById(minPriceFilterId);
-                const maxPriceFilter = document.getElementById(maxPriceFilterId);
+            function sortTableByColumn(table, columnIndex) {
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                const header = table.querySelectorAll('th')[columnIndex];
+                const columnType = header.getAttribute('data-column-type');
+                let sortDirection = header.getAttribute('data-sort-direction') || 'asc';
 
-                function applyFilters() {
-                    const filterLocationText = locationFilter ? locationFilter.value.toLowerCase() : '';
-                    const filterMinSize = minSizeFilter ? parseFloat(minSizeFilter.value) : -Infinity;
-                    const filterMaxSize = maxSizeFilter ? parseFloat(maxSizeFilter.value) : Infinity;
-                    const filterMinPrice = minPriceFilter ? parseFloat(minPriceFilter.value) : -Infinity;
-                    const filterMaxPrice = maxPriceFilter ? parseFloat(maxPriceFilter.value) : Infinity;
+                // Remove sorting indicators from other headers
+                table.querySelectorAll('th').forEach(th => {
+                    th.classList.remove('sorted-asc', 'sorted-desc');
+                    th.removeAttribute('data-sort-direction');
+                });
 
-                    rows.forEach(row => {
-                        const locationCell = row.cells[0]; // Assuming location is always column 0
-                        let locationText = locationCell.textContent.toLowerCase();
-                        const locationLink = locationCell.querySelector('a');
-                        if (locationLink) locationText = locationLink.textContent.toLowerCase();
+                const sortedRows = rows.sort((a, b) => {
+                    let aText = a.children[columnIndex].textContent.trim();
+                    let bText = b.children[columnIndex].textContent.trim();
 
-                        const size = parseFloat(row.cells[3].textContent.replace(/[^0-9.-]+/g,"")); // Size is now column 3
-                        const price = parseFloat(row.cells[4].textContent.replace(/[^0-9.-]+/g,"")); // Price is now column 4
+                    if (columnType === 'number' || columnType === 'price') {
+                        let aNum = parseFloat(aText.replace(/[^0-9.-]+/g, '')) || 0; // Remove non-numeric chars for price parsing
+                        let bNum = parseFloat(bText.replace(/[^0-9.-]+/g, '')) || 0;
 
-                        const matchesLocation = !filterLocationText || locationText.includes(filterLocationText);
-                        const matchesSize = (size >= filterMinSize && size <= filterMaxSize);
-                        const matchesPrice = (price >= filterMinPrice && price <= filterMaxPrice);
+                        if (isNaN(aNum)) aNum = (sortDirection === 'asc' ? Infinity : -Infinity); // Handle "Not specified"
+                        if (isNaN(bNum)) bNum = (sortDirection === 'asc' ? Infinity : -Infinity);
 
-                        if (matchesLocation && matchesSize && matchesPrice) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-                }
+                        return sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
+                    } else { // String comparison
+                        return sortDirection === 'asc' ? aText.localeCompare(bText) : bText.localeCompare(aText);
+                    }
+                });
 
-                // Attach filter listeners
-                if (locationFilter) locationFilter.addEventListener('input', applyFilters);
-                if (minSizeFilter) minSizeFilter.addEventListener('input', applyFilters);
-                if (maxSizeFilter) maxSizeFilter.addEventListener('input', applyFilters);
-                if (minPriceFilter) minPriceFilter.addEventListener('input', applyFilters);
-                if (maxPriceFilter) maxPriceFilter.addEventListener('input', applyFilters);
+                // Reverse direction for next click
+                sortDirection = (sortDirection === 'asc' ? 'desc' : 'asc');
+                header.setAttribute('data-sort-direction', sortDirection);
+                header.classList.add(sortDirection === 'asc' ? 'sorted-desc' : 'sorted-asc'); // Add class for current sort direction
+
+                // Append sorted rows
+                sortedRows.forEach(row => tbody.appendChild(row));
             }
-
-            // Initialize all tables
-            initializeTable('tableRentCuautlancingo', 'filterRentCuautlancingoLocation', 'filterRentCuautlancingoMinSize', 'filterRentCuautlancingoMaxSize', 'filterRentCuautlancingoMinPrice', 'filterRentCuautlancingoMaxPrice');
-            initializeTable('tableSaleCuautlancingo', 'filterSaleCuautlancingoLocation', 'filterSaleCuautlancingoMinSize', 'filterSaleCuautlancingoMaxSize', 'filterSaleCuautlancingoMinPrice', 'filterSaleCuautlancingoMaxPrice');
-            initializeTable('tableRentSanctorum', 'filterRentSanctorumLocation', 'filterRentSanctorumMinSize', 'filterRentSanctorumMaxSize', 'filterRentSanctorumMinPrice', 'filterRentSanctorumMaxPrice');
-            initializeTable('tableSaleSanctorum', 'filterSaleSanctorumLocation', 'filterSaleSanctorumMinSize', 'filterSaleSanctorumMaxSize', 'filterSaleSanctorumMinPrice', 'filterSaleSanctorumMaxPrice');
-            initializeTable('tableRentCoronango', 'filterRentCoronangoLocation', 'filterRentCoronangoMinSize', 'filterRentCoronangoMaxSize', 'filterRentCoronangoMinPrice', 'filterRentCoronangoMaxPrice');
-            initializeTable('tableSaleCoronango', 'filterSaleCoronangoLocation', 'filterSaleCoronangoMinSize', 'filterSaleCoronangoMaxSize', 'filterSaleCoronangoMinPrice', 'filterSaleCoronangoMaxPrice');
-            initializeTable('tableRentOcotlan', 'filterRentOcotlanLocation', 'filterRentOcotlanMinSize', 'filterRentOcotlanMaxSize', 'filterRentOcotlanMinPrice', 'filterRentOcotlanMaxPrice');
-            initializeTable('tableSaleOcotlan', 'filterSaleOcotlanLocation', 'filterSaleOcotlanMinSize', 'filterSaleOcotlanMaxSize', 'filterSaleOcotlanMinPrice', 'filterSaleOcotlanMaxPrice');
-            initializeTable('tableRentIgnacio', 'filterRentIgnacioLocation', 'filterRentIgnacioMinSize', 'filterRentIgnacioMaxSize', 'filterRentIgnacioMinPrice', 'filterRentIgnacioMaxPrice');
-            initializeTable('tableSaleIgnacio', 'filterSaleIgnacioLocation', 'filterSaleIgnacioMinSize', 'filterSaleIgnacioMaxSize', 'filterSaleIgnacioMinPrice', 'filterSaleIgnacioMaxPrice');
-            initializeTable('tableRentAlmecatla', 'filterRentAlmecatlaLocation', 'filterRentAlmecatlaMinSize', 'filterRentAlmecatlaMaxSize', 'filterRentAlmecatlaMinPrice', 'filterRentAlmecatlaMaxPrice');
-            initializeTable('tableSaleAlmecatla', 'filterSaleAlmecatlaLocation', 'filterSaleAlmecatlaMinSize', 'filterSaleAlmecatlaMaxSize', 'filterSaleAlmecatlaMinPrice', 'filterSaleAlmecatlaMaxPrice');
-            initializeTable('tableRentSanjuan', 'filterRentSanjuanLocation', 'filterRentSanjuanMinSize', 'filterRentSanjuanMaxSize', 'filterRentSanjuanMinPrice', 'filterRentSanjuanMaxPrice');
-            initializeTable('tableSaleSanjuan', 'filterSaleSanjuanLocation', 'filterSaleSanjuanMinSize', 'filterSaleSanjuanMaxSize', 'filterSaleSanjuanMinPrice', 'filterSaleSanjuanMaxPrice');
-            initializeTable('tableRentXoxtla', 'filterRentXoxtlaLocation', 'filterRentXoxtlaMinSize', 'filterRentXoxtlaMaxSize', 'filterRentXoxtlaMinPrice', 'filterRentXoxtlaMaxPrice');
-            initializeTable('tableSaleXoxtla', 'filterSaleXoxtlaLocation', 'filterSaleXoxtlaMinSize', 'filterSaleXoxtlaMaxSize', 'filterSaleXoxtlaMinPrice', 'filterSaleXoxtlaMaxPrice');
         });
     </script>
 </body>
